@@ -9,12 +9,16 @@ class CryptoCompare(requests.Session):
         self.app_name = None
 
     def get_price(self, fsym, tsyms):
-        url = 'https://min-api.cryptocompare.com/data/price?fsym={}&tsyms={}&extraParams={}'
+        url = 'https://min-api.cryptocompare.com/data/price?fsym={fsym}&tsyms={tsyms}{extra_params}'
 
         if isinstance(tsyms, (list, tuple, set)):
             tsyms = ','.join(tsyms)
 
-        result = requests.get(url.format(fsym.upper(), tsyms.upper(), self.app_name)).json()
+        result = requests.get(url.format(
+            fsym=fsym.upper(),
+            tsyms=tsyms.upper(),
+            extra_params='&extraParams='.format(self.app_name) if self.app_name else ''
+        )).json()
 
         if result.get('Response') == 'Error' or result.get('Type', ERROR_TYPE_THRESHOLD) < ERROR_TYPE_THRESHOLD:
             raise CryptoCompareApiError(result['Message'])
