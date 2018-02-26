@@ -9,7 +9,7 @@ class TestGetPrice(unittest.TestCase):
         """Request BTC/USD price should return that pair rate"""
         cc = CryptoCompare()
         result = cc.get_price('BTC', 'USD')
-        self.assertIsInstance(result['USD'], numbers.Real)
+        self.assertIsInstance(result['BTC']['USD'], numbers.Real)
 
     def test_bitcoin_multiple_tsyms(self):
         """Requesting multiple price for multiple quote symbols should work"""
@@ -17,13 +17,23 @@ class TestGetPrice(unittest.TestCase):
         tsyms = ['USD', 'EUR', 'JPY', 'ETH']
         result = cc.get_price('BTC', tsyms)
         for symbol in tsyms:
-            self.assertIn(symbol, result.keys())
+            self.assertIn(symbol, result['BTC'].keys())
+
+    def test_multiple_fsyms_and_tsyms(self):
+        """Requesting multiple price for multiple base and quote symbols should work"""
+        cc = CryptoCompare()
+        fsyms = ['BTC', 'LTC', 'ETH']
+        tsyms = ['USD', 'EUR']
+        result = cc.get_price(fsyms, tsyms)
+        for fs in fsyms:
+            for ts in tsyms:
+                self.assertIn(ts, result[fs])
 
     def test_bitcoin_lowercase(self):
         """Working with lowercase symbols should work"""
         cc = CryptoCompare()
         result = cc.get_price('btc', 'usd')
-        self.assertIsInstance(result['USD'], numbers.Real)
+        self.assertIsInstance(result['BTC']['USD'], numbers.Real)
 
     def test_unknown_pair(self):
         """Requesting price for a pair that does not exist should fail"""
@@ -36,7 +46,7 @@ class TestGetPrice(unittest.TestCase):
         """Request BTC/USD price on specific exchange should work"""
         cc = CryptoCompare()
         result = cc.get_price('BTC', 'USD', exchange='Bitstamp')
-        self.assertIsInstance(result['USD'], numbers.Real)
+        self.assertIsInstance(result['BTC']['USD'], numbers.Real)
 
     def test_bitcoin_usd_specific_unknown_exchange(self):
         """Requesting price for a pair on an exchange that does not exist should fail"""
