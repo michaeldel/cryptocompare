@@ -24,9 +24,22 @@ class TestGetPrice(unittest.TestCase):
         result = cc.get_price('btc', 'usd')
         self.assertIsInstance(result['USD'], float)
 
-    def test_immaginary_pair(self):
-        """Requesting price for a pair that do not exist should fail"""
+    def test_unknown_pair(self):
+        """Requesting price for a pair that does not exist should fail"""
         cc = CryptoCompare()
         self.assertRaises(
             CryptoCompareApiError, cc.get_price, 'LOREMIPSUM', 'DOLORSITAMET'
+        )
+
+    def test_bitcoin_usd_specific_exchange(self):
+        """Request BTC/USD price on specific exchange should work"""
+        cc = CryptoCompare()
+        result = cc.get_price('BTC', 'USD', exchange='Bitstamp')
+        self.assertIsInstance(result['USD'], float)
+
+    def test_bitcoin_usd_specific_unknown_exchange(self):
+        """Requesting price for a pair on an exchange that does not exist should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(
+            CryptoCompareApiError, cc.get_price, 'BTC', 'USD', exchange='foo'
         )
