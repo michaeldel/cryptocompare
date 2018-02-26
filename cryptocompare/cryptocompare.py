@@ -14,7 +14,7 @@ class CryptoCompare(requests.Session):
         if isinstance(tsyms, (list, tuple, set)):
             tsyms = ','.join(tsyms)
 
-        result = requests.get(url.format(fsym, tsyms, self.app_name)).json()
+        result = requests.get(url.format(fsym.upper(), tsyms.upper(), self.app_name)).json()
 
         if result.get('Response') == 'Error' or result.get('Type', ERROR_TYPE_THRESHOLD) < ERROR_TYPE_THRESHOLD:
             raise CryptoCompareApiError(result['Message'])
