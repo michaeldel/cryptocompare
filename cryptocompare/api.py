@@ -45,6 +45,13 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result['MiningData']
 
+    def get_mining_equipement(self):
+        url = 'https://www.cryptocompare.com/api/data/miningequipment'
+        result = requests.get(url).json()
+
+        self.__class__._check_request_response_error(result)
+        return result['MiningData']
+
 
 class CryptoCompareApiError(Exception):
     pass
