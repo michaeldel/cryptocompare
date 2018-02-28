@@ -1,7 +1,55 @@
 import numbers
 import unittest
 
-from cryptocompare import CryptoCompare, CryptoCompareApiError
+from cryptocompare import CryptoCompare, CryptoCompareApiError, ERROR_TYPE_THRESHOLD
+
+
+class TestCheckRequestResponseError(unittest.TestCase):
+    def test_empty(self):
+        """Empty response should not raise error"""
+        CryptoCompare._check_request_response_error({})
+
+    def test_data(self):
+        """Regular response data should not raise error"""
+        CryptoCompare._check_request_response_error({'a': 'b'})
+
+    def test_explicit_error_response(self):
+        """Response containing error message should raise error"""
+        self.assertRaises(
+            CryptoCompareApiError,
+            CryptoCompare._check_request_response_error,
+            {'Response': 'Error'}
+        )
+
+    def test_type_under_threshold(self):
+        """
+        Response containing type field under CryptoCompare threshold should raise error
+        """
+        self.assertRaises(
+            CryptoCompareApiError,
+            CryptoCompare._check_request_response_error,
+            {'Type': ERROR_TYPE_THRESHOLD - 1}
+        )
+
+    def test_type_equal_orover_threshold(self):
+        """
+        Response containing type field equal to or over CryptoCompare threshold
+        should not raise any error
+        """
+        CryptoCompare._check_request_response_error({'Type': ERROR_TYPE_THRESHOLD})
+        CryptoCompare._check_request_response_error({'Type': ERROR_TYPE_THRESHOLD + 1})
+
+    def test_error_has_message(self):
+        """Raised error should provide message if in response"""
+        try:
+            CryptoCompare._check_request_response_error({
+                'Response': 'Error',
+                'Message': 'Lorem ipsum dolor sit amet'
+            })
+        except CryptoCompareApiError as e:
+            self.assertEqual(str(e), 'Lorem ipsum dolor sit amet')
+        else:
+            self.fail("Should have raised")
 
 
 class TestGetCoinList(unittest.TestCase):
