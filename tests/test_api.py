@@ -62,22 +62,6 @@ class TestGetCoinList(unittest.TestCase):
         self.assertIn('ETH', result)
 
 
-class TestGetMiningContracts(unittest.TestCase):
-    def test_request(self):
-        """Mining contracts should be returned on request"""
-        cc = CryptoCompare()
-        result = cc.get_mining_contracts()
-        self.assertGreater(len(result), 0)
-
-
-class TestGetMiningEquipement(unittest.TestCase):
-    def test_request(self):
-        """Mining equipement should be returned on request"""
-        cc = CryptoCompare()
-        result = cc.get_mining_equipement()
-        self.assertGreater(len(result), 0)
-
-
 class TestGetPrice(unittest.TestCase):
     def test_bitcoin_usd(self):
         """Request BTC/USD price should return that pair rate"""
@@ -128,3 +112,19 @@ class TestGetPrice(unittest.TestCase):
         self.assertRaises(
             CryptoCompareApiError, cc.get_price, 'BTC', 'USD', exchange='foo'
         )
+
+
+class TestGetMiningContracts(unittest.TestCase):
+    def test_request(self):
+        """Mining contracts should be returned on request"""
+        cc = CryptoCompare()
+        result = cc.get_mining_contracts()
+        self.assertGreater(len(result), 0)
+
+
+class TestGetMiningEquipement(unittest.TestCase):
+    def test_request(self):
+        """Mining equipement should be returned on request"""
+        cc = CryptoCompare()
+        result = cc.get_mining_equipement()
+        self.assertGreater(len(result), 0)
