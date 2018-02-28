@@ -114,6 +114,19 @@ class TestGetPrice(unittest.TestCase):
         )
 
 
+class TestGetCoinSnapshot(unittest.TestCase):
+    def test_bitcoin_usd(self):
+        """Requesting coin snapshot for BTC/USD should work"""
+        cc = CryptoCompare()
+        result = cc.get_coin_snapshot('BTC', 'USD')
+        self.assertGreater(len(result), 0)
+
+    def test_unknown_pair(self):
+        """Requesting coin snapshot for an unknown pair should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(CryptoCompareApiError, cc.get_coin_snapshot, 'XCSGS', 'DFGHGFD')
+
+
 class TestGetSocialStats(unittest.TestCase):
     def test_bitcoin(self):
         """Requesting social stats for BTC should work"""

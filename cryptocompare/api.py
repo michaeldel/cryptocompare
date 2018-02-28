@@ -38,6 +38,13 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result
 
+    def get_coin_snapshot(self, fsym, tsym):
+        url = 'https://www.cryptocompare.com/api/data/coinsnapshot/?fsym={fsym}&tsym={tsym}'
+        result = requests.get(url.format(tsym=tsym, fsym=fsym)).json()
+
+        self.__class__._check_request_response_error(result)
+        return result['Data']
+
     def get_social_stats(self, coin_id):
         url = 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'
         result = requests.get(url.format(id=coin_id)).json()
