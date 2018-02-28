@@ -128,3 +128,28 @@ class TestGetMiningEquipement(unittest.TestCase):
         cc = CryptoCompare()
         result = cc.get_mining_equipement()
         self.assertGreater(len(result), 0)
+
+
+class TestGetTopPairs(unittest.TestCase):
+    def test_bitcoin(self):
+        """Request BTC top pairs should work"""
+        cc = CryptoCompare()
+        result = cc.get_top_pairs('BTC')
+        self.assertGreater(len(result), 0)
+
+    def test_bitcoin_lowercase(self):
+        """Request lowercase written BTC top pairs should work"""
+        cc = CryptoCompare()
+        result = cc.get_top_pairs('btc')
+        self.assertGreater(len(result), 0)
+
+    def test_unknown_symbol(self):
+        """Requesting unknown symbol top pairs should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(CryptoCompareApiError, cc.get_top_pairs, 'XZSDFE')
+
+    def test_specific_limit(self):
+        """Request top pairs with a specific limit should return that many pairs (at most)"""
+        cc = CryptoCompare()
+        result = cc.get_top_pairs('BTC', limit=10)
+        self.assertEqual(len(result), 10)
