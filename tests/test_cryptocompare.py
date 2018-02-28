@@ -4,6 +4,16 @@ import unittest
 from cryptocompare import CryptoCompare, CryptoCompareApiError
 
 
+class TestGetCoinList(unittest.TestCase):
+    def test_request(self):
+        """Coin list should be returned on request"""
+        cc = CryptoCompare()
+        result = cc.get_coin_list()
+        self.assertIn('BTC', result)
+        self.assertIn('LTC', result)
+        self.assertIn('ETH', result)
+
+
 class TestGetPrice(unittest.TestCase):
     def test_bitcoin_usd(self):
         """Request BTC/USD price should return that pair rate"""

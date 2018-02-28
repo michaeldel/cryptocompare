@@ -8,6 +8,14 @@ class CryptoCompare(requests.Session):
     def __init__(self, app_name=None):
         self.app_name = None
 
+    def get_coin_list(self):
+        url = 'https://www.cryptocompare.com/api/data/coinlist'
+        result = requests.get(url).json()
+
+        if result.get('Response') == 'Error' or result.get('Type', ERROR_TYPE_THRESHOLD) < ERROR_TYPE_THRESHOLD:
+            raise CryptoCompareApiError(result['Message'])
+        return result['Data']
+
     def get_price(self, fsyms, tsyms, exchange=None):
         url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms={fsyms}&tsyms={tsyms}{exchange}{extra_params}'
 
