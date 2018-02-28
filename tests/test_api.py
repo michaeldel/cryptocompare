@@ -114,6 +114,14 @@ class TestGetPrice(unittest.TestCase):
         )
 
 
+class TestGetSocialStats(unittest.TestCase):
+    def test_bitcoin(self):
+        """Requesting social stats for BTC should work"""
+        cc = CryptoCompare()
+        result = cc.get_social_stats(1182)  # BTC id
+        self.assertEqual(result['General']['Name'], 'BTC')
+
+
 class TestGetMiningContracts(unittest.TestCase):
     def test_request(self):
         """Mining contracts should be returned on request"""
