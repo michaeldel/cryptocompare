@@ -14,7 +14,7 @@ class CryptoCompare(requests.Session):
             raise CryptoCompareApiError(response.get('Message'))
 
     def get_coin_list(self):
-        url = 'https://www.cryptocompare.com/api/data/coinlist'
+        url = 'https://min-api.cryptocompare.com/data/all/coinlist'
         result = requests.get(url).json()
 
         self.__class__._check_request_response_error(result)
@@ -83,6 +83,7 @@ class CryptoCompare(requests.Session):
 
         self.__class__._check_request_response_error(result)
         return result['Data']
+
 
 
 class CryptoCompareApiError(Exception):
