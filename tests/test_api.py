@@ -3,6 +3,8 @@ import unittest
 
 from cryptocompare import CryptoCompare, CryptoCompareApiError, ERROR_TYPE_THRESHOLD
 
+BTC_ID = 1182
+
 
 class TestCheckRequestResponseError(unittest.TestCase):
     def test_empty(self):
@@ -131,7 +133,7 @@ class TestGetCoinSnapshotFullById(unittest.TestCase):
     def test_bitcoin(self):
         """Requesting full coin snapshot for BTC should work"""
         cc = CryptoCompare()
-        result = cc.get_coin_snapshot_full_by_id(1182)  # BTC id
+        result = cc.get_coin_snapshot_full_by_id(BTC_ID)  # BTC id
         self.assertEqual(result['General']['Symbol'], 'BTC')
 
     def test_unknown_id(self):
@@ -148,7 +150,7 @@ class TestGetSocialStats(unittest.TestCase):
     def test_bitcoin(self):
         """Requesting social stats for BTC should work"""
         cc = CryptoCompare()
-        result = cc.get_social_stats(1182)  # BTC id
+        result = cc.get_social_stats(BTC_ID)  # BTC id
         self.assertEqual(result['General']['Name'], 'BTC')
 
 
