@@ -64,6 +64,16 @@ class TestGetCoinList(unittest.TestCase):
         self.assertIn('ETH', result)
 
 
+class TestGetExchangeList(unittest.TestCase):
+    def test_request(self):
+        """Exchange list should be returned on request"""
+        cc = CryptoCompare()
+        result = cc.get_exchange_list()
+        self.assertIn('Bitstamp', result)
+        self.assertIn('Kraken', result)
+        self.assertIn('Poloniex', result)
+
+
 class TestGetPrice(unittest.TestCase):
     def test_bitcoin_usd(self):
         """Request BTC/USD price should return that pair rate"""

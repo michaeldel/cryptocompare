@@ -20,6 +20,13 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result['Data']
 
+    def get_exchange_list(self):
+        url = 'https://min-api.cryptocompare.com/data/all/exchanges'
+        result = requests.get(url).json()
+
+        self.__class__._check_request_response_error(result)
+        return result
+
     def get_price(self, fsyms, tsyms, exchange=None):
         url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms={fsyms}&tsyms={tsyms}{exchange}{extra_params}'
 
