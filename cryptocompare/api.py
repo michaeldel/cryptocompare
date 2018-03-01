@@ -45,6 +45,13 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result['Data']
 
+    def get_coin_snapshot_full_by_id(self, coin_id):
+        url = 'https://www.cryptocompare.com/api/data/coinsnapshotfullbyid/?id={id}'
+        result = requests.get(url.format(id=coin_id)).json()
+
+        self.__class__._check_request_response_error(result)
+        return result['Data']
+
     def get_social_stats(self, coin_id):
         url = 'https://www.cryptocompare.com/api/data/socialstats/?id={id}'
         result = requests.get(url.format(id=coin_id)).json()

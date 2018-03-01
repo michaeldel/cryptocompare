@@ -127,6 +127,23 @@ class TestGetCoinSnapshot(unittest.TestCase):
         self.assertRaises(CryptoCompareApiError, cc.get_coin_snapshot, 'XCSGS', 'DFGHGFD')
 
 
+class TestGetCoinSnapshotFullById(unittest.TestCase):
+    def test_bitcoin(self):
+        """Requesting full coin snapshot for BTC should work"""
+        cc = CryptoCompare()
+        result = cc.get_coin_snapshot_full_by_id(1182)  # BTC id
+        self.assertEqual(result['General']['Symbol'], 'BTC')
+
+    def test_unknown_id(self):
+        """Requesting full coin snapshot for unknown id should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(
+            CryptoCompareApiError,
+            cc.get_coin_snapshot_full_by_id,
+            9E9
+        )
+
+
 class TestGetSocialStats(unittest.TestCase):
     def test_bitcoin(self):
         """Requesting social stats for BTC should work"""
