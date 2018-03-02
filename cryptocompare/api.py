@@ -91,6 +91,11 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result['Data']
 
+    def get_news_providers(self):
+        url = 'https://min-api.cryptocompare.com/data/news/providers?{extra_params}'
+        return requests.get(url.format(
+            extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
+        )).json()
 
 
 class CryptoCompareApiError(Exception):

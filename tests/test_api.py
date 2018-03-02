@@ -203,3 +203,11 @@ class TestGetTopPairs(unittest.TestCase):
         cc = CryptoCompare()
         result = cc.get_top_pairs('BTC', limit=10)
         self.assertEqual(len(result), 10)
+
+
+class TestGetNewsProviders(unittest.TestCase):
+    def test_request(self):
+        """News providers should be returned on request"""
+        cc = CryptoCompare()
+        result = cc.get_news_providers()
+        self.assertGreater(len(result), 0)
