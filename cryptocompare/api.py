@@ -1,5 +1,7 @@
+import datetime
 import requests
 
+from datetime import timezone
 
 ERROR_TYPE_THRESHOLD = 100
 
@@ -98,6 +100,30 @@ class CryptoCompare(requests.Session):
         return requests.get(url.format(
             extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
         )).json()
+
+    def get_latest_news(self, feeds=None, before=None, lang=None):
+        url = 'https://min-api.cryptocompare.com/data/news/?{feeds}{lTs}{lang}{extra_params}'
+
+        if isinstance(feeds, (list, tuple, set)):
+            feeds = ','.join(feeds)
+        if isinstance(lang, (list, tuple, set)):
+            lang = ','.join(lang)
+
+        timestamp = None
+        if isinstance(before, datetime.datetime):
+            timestamp = int(before.replace(tzinfo=timezone.utc).timestamp())
+        elif before:
+            timestamp = int(before)
+
+        result = requests.get(url.format(
+            feeds='feeds={}'.format(feeds) if feeds else '',
+            lTs='lTs={}'.format(timestamp) if timestamp else '',
+            lang='&lang={}'.format(lang) if lang else '',
+            extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
+        )).json()
+
+        self.__class__._check_request_response_error(result)
+        return result
 
 
 class CryptoCompareApiError(Exception):

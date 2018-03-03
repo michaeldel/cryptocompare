@@ -1,3 +1,4 @@
+import datetime
 import numbers
 import unittest
 
@@ -215,3 +216,51 @@ class TestGetNewsProviders(unittest.TestCase):
         cc = CryptoCompare()
         result = cc.get_news_providers()
         self.assertGreater(len(result), 0)
+
+
+class TestGetLatestNews(unittest.TestCase):
+    def test_no_feed(self):
+        """
+        Latest news for all feeds should be returned if no specific feed is
+        provided
+        """
+        cc = CryptoCompare()
+        result = cc.get_latest_news()
+        self.assertGreater(len(result), 0)
+
+    def test_one_feed(self):
+        """News for provided feeds only should be provided when specified"""
+        cc = CryptoCompare()
+        feed = 'cryptocompare'
+        result = cc.get_latest_news(feeds=feed)
+        for news in result:
+            self.assertEqual(news['source'], feed)
+
+    def test_some_feeds(self):
+        """News for provided feeds only should be provided when specified"""
+        cc = CryptoCompare()
+        feeds = ['coindesk', 'cryptocompare']
+        result = cc.get_latest_news(feeds=feeds)
+        for news in result:
+            self.assertIn(news['source'], feeds)
+
+    def test_before_date_from_datetime(self):
+        """News should only be from provided datetime"""
+        cc = CryptoCompare()
+        dt = datetime.datetime(year=2017, month=6, day=1)
+        result = cc.get_latest_news(before=dt)
+        for news in result:
+            self.assertLessEqual(news['published_on'], dt.timestamp())
+
+    def test_specific_lang(self):
+        """News should be in specific lang when provided"""
+        cc = CryptoCompare()
+        lang = 'PT'
+        result = cc.get_latest_news(lang=lang)
+        for news in result:
+            self.assertEqual(news['lang'], lang)
+
+    def test_unknown_lang(self):
+        """Error should be raised when provided unknown lang"""
+        cc = CryptoCompare()
+        self.assertRaises(CryptoCompareApiError, cc.get_latest_news, lang='WXYZ')
