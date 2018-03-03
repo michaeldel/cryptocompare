@@ -10,6 +10,7 @@ Example usage
 =============
 
 .. code-block:: python
+
     from cryptocompare import CryptoCompare
 
     cc = CryptoCompare()
