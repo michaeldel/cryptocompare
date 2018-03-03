@@ -11,6 +11,10 @@ class TestCheckRequestResponseError(unittest.TestCase):
         """Empty response should not raise error"""
         CryptoCompare._check_request_response_error({})
 
+    def test_list(self):
+        """No error should raise when provided a list"""
+        CryptoCompare._check_request_response_error([])
+
     def test_data(self):
         """Regular response data should not raise error"""
         CryptoCompare._check_request_response_error({'a': 'b'})

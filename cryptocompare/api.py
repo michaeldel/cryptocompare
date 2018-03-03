@@ -10,6 +10,8 @@ class CryptoCompare(requests.Session):
 
     @staticmethod
     def _check_request_response_error(response):
+        if not isinstance(response, dict):
+            return
         if response.get('Response') == 'Error' or response.get('Type', ERROR_TYPE_THRESHOLD) < ERROR_TYPE_THRESHOLD:
             raise CryptoCompareApiError(response.get('Message'))
 
