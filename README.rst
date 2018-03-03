@@ -14,6 +14,6 @@ Example usage
     from cryptocompare import CryptoCompare
 
     cc = CryptoCompare()
-    price = cc.get_price('BTC', 'USD')
+    price = cc.get_price('BTC', 'USD')['BTC']['USD']
 
     print("1 BTC is worth {} usd".format(price))
