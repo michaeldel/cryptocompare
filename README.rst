@@ -8,6 +8,7 @@ Python API wrapper for CryptoCompare making retrieving data from that service si
 
 Example usage
 =============
+
 .. code-block:: python
     from cryptocompare import CryptoCompare
 
