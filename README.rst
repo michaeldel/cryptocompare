@@ -5,6 +5,7 @@ CryptoCompare API wrapper
     :target: https://travis-ci.org/michaeldel/cryptocompare
 
 Python API wrapper for CryptoCompare making retrieving data from that service simple and clean.
+Official documentation for endpoints is available here https://min-api.cryptocompare.com/
 
 Example usage
 =============
