@@ -114,6 +114,18 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result['MiningData']
 
+    def get_top_exchanges(self, fsym, tsym, limit=None):
+        url = 'https://min-api.cryptocompare.com/data/top/exchanges?fsym={fsym}&tsym={tsym}{limit}{extra_params}'
+        result = requests.get(url.format(
+            fsym=fsym.upper(),
+            tsym=tsym.upper(),
+            limit='&limit={}'.format(limit) if limit else '',
+            extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
+        )).json()
+
+        self.__class__._check_request_response_error(result)
+        return result['Data']
+
     def get_top_pairs(self, fsym, limit=None):
         url = 'https://min-api.cryptocompare.com/data/top/pairs?fsym={fsym}{limit}{extra_params}'
         result = requests.get(url.format(

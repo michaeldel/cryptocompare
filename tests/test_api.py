@@ -260,6 +260,31 @@ class TestGetMiningEquipement(unittest.TestCase):
         self.assertGreater(len(result), 0)
 
 
+class TestGetTopExchanges(unittest.TestCase):
+    def test_btc_usd(self):
+        """Request BTC/USD top exchanges should work"""
+        cc = CryptoCompare()
+        result = cc.get_top_exchanges('BTC', 'USD')
+        self.assertGreater(len(result), 0)
+
+    def test_btc_usd_lowercase(self):
+        """Request lowercase written BTC/USD top exchanges should work"""
+        cc = CryptoCompare()
+        result = cc.get_top_exchanges('btc', 'usd')
+        self.assertGreater(len(result), 0)
+
+    def test_unknown_pair(self):
+        """Requesting unknown pair top exchanges should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(CryptoCompareApiError, cc.get_top_exchanges, 'FBFBF', 'ZXXCD')
+
+    def test_specific_limit(self):
+        """Request top exchanges with a specific limit should return that many exchanges (at most)"""
+        cc = CryptoCompare()
+        result = cc.get_top_exchanges('BTC', 'USD', limit=10)
+        self.assertEqual(len(result), 10)
+
+
 class TestGetTopPairs(unittest.TestCase):
     def test_bitcoin(self):
         """Request BTC top pairs should work"""
