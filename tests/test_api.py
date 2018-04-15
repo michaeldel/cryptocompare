@@ -131,6 +131,60 @@ class TestGetPrice(unittest.TestCase):
         )
 
 
+class TestGetSymbolsFullData(unittest.TestCase):
+    def test_bitcoin_usd(self):
+        """Request BTC/USD price should return that pair rate"""
+        cc = CryptoCompare()
+        result = cc.get_symbols_full_data('BTC', 'USD')
+        self.assertIsInstance(result['RAW']['BTC']['USD']['PRICE'], numbers.Real)
+
+    def test_bitcoin_multiple_tsyms(self):
+        """Requesting multiple price for multiple quote symbols should work"""
+        cc = CryptoCompare()
+        tsyms = ['USD', 'EUR', 'JPY', 'ETH']
+        result = cc.get_symbols_full_data('BTC', tsyms)
+        for symbol in tsyms:
+            self.assertIn(symbol, result['RAW']['BTC'].keys())
+            self.assertIn(symbol, result['DISPLAY']['BTC'].keys())
+
+    def test_multiple_fsyms_and_tsyms(self):
+        """Requesting multiple price for multiple base and quote symbols should work"""
+        cc = CryptoCompare()
+        fsyms = ['BTC', 'LTC', 'ETH']
+        tsyms = ['USD', 'EUR']
+        result = cc.get_symbols_full_data(fsyms, tsyms)
+        for fs in fsyms:
+            for ts in tsyms:
+                self.assertIn(ts, result['RAW'][fs])
+                self.assertIn(ts, result['DISPLAY'][fs])
+
+    def test_bitcoin_lowercase(self):
+        """Working with lowercase symbols should work"""
+        cc = CryptoCompare()
+        result = cc.get_symbols_full_data('btc', 'usd')
+        self.assertIsInstance(result['RAW']['BTC']['USD']['PRICE'], numbers.Real)
+
+    def test_unknown_pair(self):
+        """Requesting price for a pair that does not exist should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(
+            CryptoCompareApiError, cc.get_symbols_full_data, 'LOREMIPSUM', 'DOLORSITAMET'
+        )
+
+    def test_bitcoin_usd_specific_exchange(self):
+        """Request BTC/USD price on specific exchange should work"""
+        cc = CryptoCompare()
+        result = cc.get_symbols_full_data('BTC', 'USD', exchange='Bitstamp')
+        self.assertIsInstance(result['RAW']['BTC']['USD']['PRICE'], numbers.Real)
+
+    def test_bitcoin_usd_specific_unknown_exchange(self):
+        """Requesting price for a pair on an exchange that does not exist should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(
+            CryptoCompareApiError, cc.get_symbols_full_data, 'BTC', 'USD', exchange='foo'
+        )
+
+
 class TestGetCoinSnapshot(unittest.TestCase):
     def test_bitcoin_usd(self):
         """Requesting coin snapshot for BTC/USD should work"""

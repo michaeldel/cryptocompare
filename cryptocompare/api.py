@@ -49,6 +49,24 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result
 
+    def get_symbols_full_data(self, fsyms, tsyms, exchange=None):
+        url = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms={fsyms}&tsyms={tsyms}{exchange}{extra_params}'
+
+        if isinstance(fsyms, (list, tuple, set)):
+            fsyms = ','.join(fsyms)
+        if isinstance(tsyms, (list, tuple, set)):
+            tsyms = ','.join(tsyms)
+
+        result = requests.get(url.format(
+            fsyms=fsyms.upper(),
+            tsyms=tsyms.upper(),
+            exchange='&e={}'.format(exchange) if exchange else '',
+            extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
+        )).json()
+
+        self.__class__._check_request_response_error(result)
+        return result
+
     def get_coin_snapshot(self, fsym, tsym):
         url = 'https://www.cryptocompare.com/api/data/coinsnapshot/?fsym={fsym}&tsym={tsym}'
         result = requests.get(url.format(tsym=tsym, fsym=fsym)).json()
