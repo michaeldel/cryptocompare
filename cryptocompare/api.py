@@ -1,9 +1,16 @@
+import enum
 import datetime
 import requests
 
 from datetime import timezone
 
 ERROR_TYPE_THRESHOLD = 100
+
+
+class Period(enum.Enum):
+    DAY = 'day'
+    HOUR = 'hour'
+    MINUTE = 'minute'
 
 
 class CryptoCompare(requests.Session):
@@ -78,6 +85,21 @@ class CryptoCompare(requests.Session):
 
         self.__class__._check_request_response_error(result)
         return result
+
+    def get_historical(self, fsym, tsym, period=Period.DAY, exchange=None, limit=None, to_ts=None):
+        url = 'https://min-api.cryptocompare.com/data/histo{period}?fsym={fsym}&tsym={tsym}{limit}{exchange}{to_ts}{extra_params}'
+        result = requests.get(url.format(
+            fsym=fsym.upper(),
+            tsym=tsym.upper(),
+            period=period.value,
+            exchange='&e={}'.format(exchange) if exchange else '',
+            limit='&limit={}'.format(limit) if limit else '',
+            to_ts='&toTs={}'.format(to_ts) if to_ts else '',
+            extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
+        )).json()
+
+        self.__class__._check_request_response_error(result)
+        return result['Data']
 
     def get_coin_snapshot(self, fsym, tsym):
         url = 'https://www.cryptocompare.com/api/data/coinsnapshot/?fsym={fsym}&tsym={tsym}'

@@ -1,8 +1,9 @@
 import datetime
 import numbers
+import time
 import unittest
 
-from cryptocompare import CryptoCompare, CryptoCompareApiError, ERROR_TYPE_THRESHOLD
+from cryptocompare import CryptoCompare, CryptoCompareApiError, ERROR_TYPE_THRESHOLD, Period
 
 BTC_ID = 1182
 
@@ -204,6 +205,48 @@ class TestGetGenerateCustomAverage(unittest.TestCase):
         self.assertRaises(
             CryptoCompareApiError, cc.get_generate_custom_average, 'BTC', 'USD', ['foo']
         )
+
+
+class TestGetHistorical(unittest.TestCase):
+    def test_btc_usd(self):
+        """Get historical data for BTC/USD should work"""
+        cc = CryptoCompare()
+        result = cc.get_historical('BTC', 'USD')
+        self.assertIsInstance(result[0]['close'], numbers.Real)
+
+    def test_limit(self):
+        """
+        When a limit is provided, historical data should only have that many
+        elements (at most)
+        """
+        cc = CryptoCompare()
+        result = cc.get_historical('BTC', 'USD', limit=25)
+        # for some reason CryptoCompare returns limit + 1 points
+        self.assertEqual(len(result), 25 + 1)
+
+    def test_specific_period(self):
+        """Historical data should follow specified period"""
+        cc = CryptoCompare()
+        result = cc.get_historical('BTC', 'USD', period=Period.MINUTE)
+        for a, b in zip(result[:-1], result[1:]):
+            self.assertEqual(b['time'] - a['time'], 60)
+
+    def test_to_ts(self):
+        """
+        When timestamp limit is provided, historical data should only be before
+        that limit
+        """
+        cc = CryptoCompare()
+        ts = int(time.time()) - 1000
+        result = cc.get_historical('BTC', 'USD', period=Period.MINUTE, to_ts=ts)
+        for e in result:
+            self.assertLessEqual(e['time'], ts)
+
+    def test_specific_exchange(self):
+        """Requesting historical data from a specific exchange should work"""
+        cc = CryptoCompare()
+        result = cc.get_historical('BTC', 'USD', exchange='Kraken')
+        self.assertIsInstance(result[0]['close'], numbers.Real)
 
 
 class TestGetCoinSnapshot(unittest.TestCase):
