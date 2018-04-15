@@ -185,6 +185,27 @@ class TestGetSymbolsFullData(unittest.TestCase):
         )
 
 
+class TestGetGenerateCustomAverage(unittest.TestCase):
+    def test_one_exchange(self):
+        """Generated custom average from one exchange should work"""
+        cc = CryptoCompare()
+        result = cc.get_generate_custom_average('BTC', 'USD', ['Kraken'])
+        self.assertIsInstance(result['RAW']['PRICE'], numbers.Real)
+
+    def test_multiple_exchanges(self):
+        """Generated custom average from multiple exchanges should work"""
+        cc = CryptoCompare()
+        result = cc.get_generate_custom_average('BTC', 'USD', ['Kraken', 'Bitstamp'])
+        self.assertIsInstance(result['RAW']['PRICE'], numbers.Real)
+
+    def test_bitcoin_usd_specific_unknown_exchange(self):
+        """Requesting custom average on an exchange that does not exist should fail"""
+        cc = CryptoCompare()
+        self.assertRaises(
+            CryptoCompareApiError, cc.get_generate_custom_average, 'BTC', 'USD', ['foo']
+        )
+
+
 class TestGetCoinSnapshot(unittest.TestCase):
     def test_bitcoin_usd(self):
         """Requesting coin snapshot for BTC/USD should work"""

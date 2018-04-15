@@ -67,6 +67,18 @@ class CryptoCompare(requests.Session):
         self.__class__._check_request_response_error(result)
         return result
 
+    def get_generate_custom_average(self, fsym, tsym, exchanges=[]):
+        url = 'https://min-api.cryptocompare.com/data/generateAvg?fsym={fsym}&tsym={tsym}&e={exchange}'
+        result = requests.get(url.format(
+            fsym=fsym.upper(),
+            tsym=tsym.upper(),
+            exchange=','.join(exchanges),
+            extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
+        )).json()
+
+        self.__class__._check_request_response_error(result)
+        return result
+
     def get_coin_snapshot(self, fsym, tsym):
         url = 'https://www.cryptocompare.com/api/data/coinsnapshot/?fsym={fsym}&tsym={tsym}'
         result = requests.get(url.format(tsym=tsym, fsym=fsym)).json()
