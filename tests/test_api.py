@@ -249,6 +249,33 @@ class TestGetHistorical(unittest.TestCase):
         self.assertIsInstance(result[0]['close'], numbers.Real)
 
 
+class TestGetHistoricalForTimestamp(unittest.TestCase):
+    def test_today(self):
+        """Get historical data for today should work"""
+        cc = CryptoCompare()
+        result = cc.get_historical_for_timestamp('BTC', 'USD', int(time.time()))
+        self.assertIsInstance(result['BTC']['USD'], numbers.Real)
+
+    def test_yesterday(self):
+        """Get historical data for yesterday should work"""
+        cc = CryptoCompare()
+        result = cc.get_historical_for_timestamp('BTC', 'USD', int(time.time() - 24 * 3600))
+        self.assertIsInstance(result['BTC']['USD'], numbers.Real)
+
+    def test_multiple_tsyms(self):
+        """Historical price should be returned with all quote symbols passed"""
+        cc = CryptoCompare()
+        result = cc.get_historical_for_timestamp('BTC', ('USD', 'EUR'), int(time.time()))
+        self.assertIsInstance(result['BTC']['USD'], numbers.Real)
+        self.assertIsInstance(result['BTC']['EUR'], numbers.Real)
+
+    def test_specific_exchange(self):
+        """Requesting historical data from a specific exchange should work"""
+        cc = CryptoCompare()
+        result = cc.get_historical_for_timestamp('BTC', 'USD', int(time.time()), exchange='Kraken')
+        self.assertIsInstance(result['BTC']['USD'], numbers.Real)
+
+
 class TestGetCoinSnapshot(unittest.TestCase):
     def test_bitcoin_usd(self):
         """Requesting coin snapshot for BTC/USD should work"""

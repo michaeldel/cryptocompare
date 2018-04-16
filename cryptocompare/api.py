@@ -13,6 +13,12 @@ class Period(enum.Enum):
     MINUTE = 'minute'
 
 
+class CalculationType(enum.Enum):
+    CLOSE = 'Close'
+    MID_HIGH_LOW = 'MidHighLow'
+    VOL_F_VOL_T = 'VolFVolT'
+
+
 class CryptoCompare(requests.Session):
     def __init__(self, app_name=None):
         self.app_name = None
@@ -100,6 +106,24 @@ class CryptoCompare(requests.Session):
 
         self.__class__._check_request_response_error(result)
         return result['Data']
+
+    def get_historical_for_timestamp(self, fsym, tsyms, ts, calculation_type=None, exchange=None):
+        url = 'https://min-api.cryptocompare.com/data/pricehistorical?fsym={fsym}&tsyms={tsyms}&ts={ts}{calculation_type}{exchange}{extra_params}'
+
+        if isinstance(tsyms, (list, tuple, set)):
+            tsyms = ','.join(tsyms)
+
+        result = requests.get(url.format(
+            fsym=fsym.upper(),
+            tsyms=tsyms.upper(),
+            ts=ts,
+            calculation_type='&calculationType={}'.format(calculation_type.value) if calculation_type else '',
+            exchange='&e={}'.format(exchange) if exchange else '',
+            extra_params='&extraParams={}'.format(self.app_name) if self.app_name else ''
+        )).json()
+
+        self.__class__._check_request_response_error(result)
+        return result
 
     def get_coin_snapshot(self, fsym, tsym):
         url = 'https://www.cryptocompare.com/api/data/coinsnapshot/?fsym={fsym}&tsym={tsym}'
