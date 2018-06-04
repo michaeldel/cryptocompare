@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='CryptoCompare',
+    name='cryptocompare',
     version='0.1',
     packages=['cryptocompare'],
     license='MIT',
